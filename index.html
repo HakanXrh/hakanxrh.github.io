@@ -4,25 +4,324 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Haxi Games</title>
+<meta name="description" content="Haxi Games — tek kişilik bağımsız mobil oyun stüdyosu. Mythweald: Idle RPG yakında Google Play'de.">
+<meta property="og:title" content="Haxi Games">
+<meta property="og:description" content="Tek kişilik bağımsız mobil oyun stüdyosu. Mythweald: Idle RPG yakında Google Play'de.">
+<meta property="og:image" content="https://hakanxrh.github.io/img/mythweald-hero.jpg">
+<meta property="og:type" content="website">
+<meta name="theme-color" content="#faf8f4">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23ff5a36'/%3E%3Ctext x='32' y='44' font-family='Arial,sans-serif' font-size='32' font-weight='700' fill='white' text-anchor='middle'%3Ehx%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-  :root { --bg: #f7f5f0; --fg: #222; --muted: #666; --accent: #8a6a1f; }
-  @media (prefers-color-scheme: dark) {
-    :root { --bg: #11161f; --fg: #e8e4da; --muted: #9a958a; --accent: #d4af5a; }
+  :root {
+    --bg: #faf8f4;
+    --bg-2: #f1ede6;
+    --card: #ffffff;
+    --ink: #15151b;
+    --muted: #64626b;
+    --line: #e4dfd6;
+    --accent: #ff5a36;
+    --accent-ink: #ffffff;
+    --soft: #ffe9e2;
+    --band: #15151b;
+    --band-ink: #faf8f4;
+    --radius: 20px;
   }
-  body { margin: 0; background: var(--bg); color: var(--fg); font: 16px/1.6 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
-  main { max-width: 720px; margin: 0 auto; padding: 32px 16px 64px; }
-  a { color: var(--accent); }
-  .meta { color: var(--muted); }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #111116; --bg-2: #18181f; --card: #1d1d25; --ink: #f2efe9; --muted: #9d9aa4;
+      --line: #2b2b35; --soft: #3a1d16; --band: #1d1d25; --band-ink: #f2efe9;
+    }
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0; background: var(--bg); color: var(--ink);
+    font: 16px/1.65 Inter, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: inherit; }
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 0 20px; }
+  h1, h2, h3, h4, .display { font-family: "Space Grotesk", Inter, sans-serif; letter-spacing: -.02em; }
+
+  /* header */
+  header { position: sticky; top: 0; z-index: 10; background: color-mix(in srgb, var(--bg) 85%, transparent); backdrop-filter: blur(12px); }
+  .bar { display: flex; align-items: center; justify-content: space-between; height: 72px; gap: 16px; }
+  .brand { display: flex; align-items: center; gap: 10px; text-decoration: none; font-family: "Space Grotesk", sans-serif; font-weight: 700; font-size: 20px; }
+  .logo {
+    width: 36px; height: 36px; border-radius: 10px; background: var(--accent); color: var(--accent-ink);
+    display: grid; place-items: center; font-size: 17px; font-weight: 700; letter-spacing: -.04em;
+  }
+  nav { display: flex; align-items: center; gap: 26px; font-size: 15px; font-weight: 500; }
+  nav a { text-decoration: none; color: var(--muted); }
+  nav a:hover { color: var(--ink); }
+  .lang { display: flex; background: var(--bg-2); border-radius: 999px; padding: 3px; }
+  .lang button {
+    background: none; border: 0; color: var(--muted); padding: 4px 11px; border-radius: 999px;
+    font: inherit; font-size: 13px; font-weight: 600; cursor: pointer;
+  }
+  .lang button[aria-pressed="true"] { background: var(--card); color: var(--ink); box-shadow: 0 1px 3px rgba(0,0,0,.12); }
+
+  /* hero */
+  .hero { padding: 90px 0 70px; position: relative; overflow: hidden; }
+  .shapes { position: absolute; inset: 0; pointer-events: none; }
+  .shapes span { position: absolute; border-radius: 50%; }
+  .shapes .s1 { width: 420px; height: 420px; right: -120px; top: -60px; background: var(--soft); }
+  .shapes .s2 { width: 120px; height: 120px; right: 260px; top: 300px; border: 14px solid var(--accent); opacity: .9; }
+  .shapes .s3 { width: 26px; height: 26px; right: 140px; top: 90px; background: var(--ink); }
+  .hero .wrap { position: relative; }
+  .pill {
+    display: inline-flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600;
+    background: var(--card); border: 1px solid var(--line); padding: 6px 14px; border-radius: 999px;
+  }
+  .pill i { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); }
+  .hero h1 { font-size: clamp(42px, 7.5vw, 84px); line-height: 1.02; margin: 26px 0 24px; max-width: 820px; }
+  .hero h1 em { font-style: normal; color: var(--accent); }
+  .hero p { max-width: 540px; color: var(--muted); font-size: 19px; margin: 0 0 34px; }
+  .btns { display: flex; flex-wrap: wrap; gap: 12px; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 8px; padding: 14px 24px; border-radius: 999px;
+    font-weight: 600; font-size: 15px; text-decoration: none; transition: transform .15s ease;
+  }
+  .btn:hover { transform: translateY(-2px); }
+  .btn-main { background: var(--ink); color: var(--bg); }
+  .btn-line { border: 1.5px solid var(--line); background: var(--card); }
+
+  /* stats */
+  .stats { display: grid; grid-template-columns: repeat(3, 1fr); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+  .stat { padding: 26px 0; }
+  .stat + .stat { border-left: 1px solid var(--line); padding-left: 28px; }
+  .stat b { display: block; font-family: "Space Grotesk", sans-serif; font-size: 30px; }
+  .stat span { color: var(--muted); font-size: 14px; }
+
+  section { padding: 96px 0; }
+  .kicker { color: var(--accent); font-weight: 600; font-size: 14px; letter-spacing: .08em; text-transform: uppercase; }
+  .h2 { font-size: clamp(30px, 4.5vw, 46px); line-height: 1.1; margin: 10px 0 44px; max-width: 640px; }
+
+  /* game */
+  .game {
+    display: grid; grid-template-columns: 1.1fr 1fr; gap: 0; background: var(--card);
+    border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden;
+  }
+  .game-art { min-height: 360px; background: #1b1b24 url(img/mythweald-hero.jpg) center / cover; }
+  .game-body { padding: 40px; display: flex; flex-direction: column; }
+  .game-head { display: flex; align-items: center; gap: 14px; margin-bottom: 18px; }
+  .game-head img { width: 60px; height: 60px; border-radius: 14px; }
+  .game-head h3 { margin: 0; font-size: 24px; }
+  .game-head small { color: var(--muted); font-size: 14px; }
+  .badge {
+    align-self: flex-start; font-size: 12.5px; font-weight: 600; color: var(--accent);
+    background: var(--soft); padding: 5px 12px; border-radius: 999px; margin-bottom: 16px;
+  }
+  .game-body p { color: var(--muted); margin: 0 0 22px; }
+  .tags { display: flex; flex-wrap: wrap; gap: 8px; list-style: none; padding: 0; margin: 0 0 28px; }
+  .tags li { font-size: 13px; font-weight: 500; background: var(--bg-2); padding: 5px 12px; border-radius: 8px; }
+  .game-links { margin-top: auto; display: flex; flex-wrap: wrap; gap: 20px; font-size: 14.5px; font-weight: 600; }
+  .game-links a { text-decoration: none; border-bottom: 2px solid var(--accent); padding-bottom: 1px; }
+
+  .next {
+    margin-top: 18px; border: 1.5px dashed var(--line); border-radius: var(--radius);
+    padding: 26px 30px; display: flex; align-items: center; justify-content: space-between; gap: 16px; color: var(--muted);
+  }
+  .next b { color: var(--ink); font-family: "Space Grotesk", sans-serif; font-size: 18px; }
+
+  /* values */
+  .values { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  .value { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); padding: 30px; }
+  .num { font-family: "Space Grotesk", sans-serif; font-weight: 700; color: var(--accent); font-size: 15px; }
+  .value h4 { font-size: 21px; margin: 14px 0 8px; }
+  .value p { margin: 0; color: var(--muted); font-size: 15px; }
+
+  /* contact band */
+  .band { background: var(--band); color: var(--band-ink); border-radius: 28px; padding: 64px 56px; position: relative; overflow: hidden; }
+  .band::after {
+    content: ""; position: absolute; width: 300px; height: 300px; border-radius: 50%;
+    right: -80px; bottom: -120px; background: var(--accent); opacity: .9;
+  }
+  .band > * { position: relative; z-index: 1; }
+  .band h2 { font-size: clamp(30px, 4.5vw, 48px); line-height: 1.08; margin: 0 0 14px; max-width: 600px; }
+  .band p { opacity: .75; margin: 0 0 30px; max-width: 480px; }
+  .band .btn { background: var(--band-ink); color: var(--band); }
+
+  footer { padding: 40px 0 50px; color: var(--muted); font-size: 14px; }
+  footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 14px; }
+  footer a { text-decoration: none; }
+  footer a:hover { color: var(--ink); }
+  .foot-links { display: flex; gap: 22px; }
+
+  [data-en] { display: none; }
+  html[lang="en"] [data-tr] { display: none; }
+  html[lang="en"] [data-en] { display: revert; }
+
+  @media (max-width: 860px) {
+    nav .hide-sm { display: none; }
+    .hero { padding: 56px 0 50px; }
+    .shapes .s1 { width: 260px; height: 260px; right: -110px; top: -40px; }
+    .shapes .s2, .shapes .s3 { display: none; }
+    .stats { grid-template-columns: 1fr; }
+    .stat + .stat { border-left: 0; border-top: 1px solid var(--line); padding-left: 0; }
+    .stat { padding: 18px 0; }
+    section { padding: 64px 0; }
+    .game { grid-template-columns: 1fr; }
+    .game-art { min-height: 200px; }
+    .game-body { padding: 26px 22px 30px; }
+    .values { grid-template-columns: 1fr; }
+    .next { flex-direction: column; align-items: flex-start; }
+    .band { padding: 44px 26px 120px; border-radius: 22px; }
+    .band::after { width: 200px; height: 200px; right: -50px; bottom: -110px; }
+  }
 </style>
 </head>
 <body>
-<main>
-<h1>Haxi Games</h1>
-<p class="meta">İletişim / Contact: <a href="mailto:haxigamestudio@gmail.com">haxigamestudio@gmail.com</a></p>
-<h2>Mythweald: Idle RPG</h2>
-<ul>
-  <li><a href="/haxigames/mythweald/privacy.html">Gizlilik Politikası / Privacy Policy</a></li>
-</ul>
+
+<header>
+  <div class="wrap bar">
+    <a class="brand" href="#top"><span class="logo">hx</span>Haxi Games</a>
+    <nav>
+      <a class="hide-sm" href="#games"><span data-tr>Oyunlar</span><span data-en>Games</span></a>
+      <a class="hide-sm" href="#studio"><span data-tr>Stüdyo</span><span data-en>Studio</span></a>
+      <a class="hide-sm" href="#contact"><span data-tr>İletişim</span><span data-en>Contact</span></a>
+      <div class="lang" role="group" aria-label="Dil / Language">
+        <button type="button" data-set-lang="tr" aria-pressed="true">TR</button>
+        <button type="button" data-set-lang="en" aria-pressed="false">EN</button>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+  <div class="hero">
+    <div class="shapes" aria-hidden="true"><span class="s1"></span><span class="s2"></span><span class="s3"></span></div>
+    <div class="wrap">
+      <span class="pill"><i></i><span data-tr>Tek kişilik bağımsız oyun stüdyosu</span><span data-en>A one-person indie game studio</span></span>
+      <h1>
+        <span data-tr>Dönüp tekrar<br>oynamak isteyeceğin <em>oyunlar.</em></span>
+        <span data-en>Games you'll want to<br>come <em>back to.</em></span>
+      </h1>
+      <p>
+        <span data-tr>Haxi Games tek bir geliştiricinin stüdyosu. Tasarımdan koda, oyunlarımın her parçasını kendim yapıyorum: oyuncunun zamanına saygı duyan, adil ve uzun süre keyif veren mobil oyunlar.</span>
+        <span data-en>Haxi Games is a one-person studio. From design to code, I build every part of my games myself: fair mobile games that respect your time and stay fun for a long while.</span>
+      </p>
+      <div class="btns">
+        <a class="btn btn-main" href="#games"><span data-tr>Oyunlarım</span><span data-en>My games</span> →</a>
+        <a class="btn btn-line" href="#contact"><span data-tr>İletişime geç</span><span data-en>Get in touch</span></a>
+      </div>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <div class="stats">
+      <div class="stat"><b>1 kişi</b><span data-tr>Tasarım, kod ve yayın</span><span data-en>Design, code and publishing</span></div>
+      <div class="stat"><b>Android</b><span data-tr>İlk platform</span><span data-en>First platform</span></div>
+      <div class="stat"><b>TR · EN</b><span data-tr>Oyun dilleri</span><span data-en>Game languages</span></div>
+    </div>
+  </div>
+
+  <section id="games">
+    <div class="wrap">
+      <div class="kicker"><span data-tr>Oyunlar</span><span data-en>Games</span></div>
+      <h2 class="h2"><span data-tr>Şu an üzerinde çalıştığım oyun</span><span data-en>What I.m working on</span></h2>
+
+      <article class="game">
+        <div class="game-art" role="img" aria-label="Mythweald: Idle RPG"></div>
+        <div class="game-body">
+          <div class="game-head">
+            <img src="img/mythweald-icon.jpg" alt="" width="60" height="60">
+            <div>
+              <h3>Mythweald: Idle RPG</h3>
+              <small>Android · <span data-tr>Rol yapma</span><span data-en>Role playing</span></small>
+            </div>
+          </div>
+          <span class="badge"><span data-tr>Yakında Google Play'de</span><span data-en>Coming soon to Google Play</span></span>
+          <p>
+            <span data-tr>Kahramanını oluştur, bir sınıf seç ve yedi bölge boyunca zindanlara, bosslara ve Sonsuz Kule'ye meydan oku. Oyunu kapattığında da kahramanın savaşmaya, toplamaya ve üretmeye devam eder.</span>
+            <span data-en>Create your hero, pick a class and take on dungeons, bosses and the Endless Tower across seven regions. Even when the game is closed, your hero keeps fighting, gathering and crafting.</span>
+          </p>
+          <ul class="tags">
+            <li><span data-tr>7 bölge</span><span data-en>7 regions</span></li>
+            <li><span data-tr>3 sınıf</span><span data-en>3 classes</span></li>
+            <li><span data-tr>Zindanlar</span><span data-en>Dungeons</span></li>
+            <li><span data-tr>Üretim</span><span data-en>Crafting</span></li>
+            <li><span data-tr>Yoldaşlar</span><span data-en>Companions</span></li>
+            <li><span data-tr>Çevrimdışı ilerleme</span><span data-en>Offline progress</span></li>
+          </ul>
+          <div class="game-links">
+            <a href="/haxigames/mythweald/privacy.html"><span data-tr>Gizlilik Politikası</span><span data-en>Privacy Policy</span></a>
+            <a href="mailto:haxigamestudio@gmail.com?subject=Mythweald"><span data-tr>Destek</span><span data-en>Support</span></a>
+          </div>
+        </div>
+      </article>
+
+      <div class="next">
+        <div><b><span data-tr>Sıradaki oyun</span><span data-en>Next game</span></b><br>
+          <span data-tr>Yeni bir proje üzerinde çalışıyorum. Yakında burada.</span><span data-en>I.m working on something new. Coming here soon.</span></div>
+        <span aria-hidden="true" style="font-size: 26px;">✦</span>
+      </div>
+    </div>
+  </section>
+
+  <section id="studio" style="background: var(--bg-2);">
+    <div class="wrap">
+      <div class="kicker"><span data-tr>Stüdyo</span><span data-en>Studio</span></div>
+      <h2 class="h2"><span data-tr>Tek geliştirici, net ilkeler</span><span data-en>One developer, clear principles</span></h2>
+      <div class="values">
+        <div class="value">
+          <div class="num">01</div>
+          <h4><span data-tr>Adil oyun</span><span data-en>Fair play</span></h4>
+          <p><span data-tr>Satın almadan da sonuna kadar oynanabilen, dengeli oyunlar yapıyorum.</span><span data-en>I make balanced games you can play all the way through without paying.</span></p>
+        </div>
+        <div class="value">
+          <div class="num">02</div>
+          <h4><span data-tr>Zamanına saygı</span><span data-en>Respect for your time</span></h4>
+          <p><span data-tr>Kısa oturumlarda bile anlamlı ilerleme. Telefonu bırakınca oyun da seni bekler.</span><span data-en>Meaningful progress even in short sessions. When you put the phone down, the game waits for you.</span></p>
+        </div>
+        <div class="value">
+          <div class="num">03</div>
+          <h4><span data-tr>Oyuncuyla birlikte</span><span data-en>Built with players</span></h4>
+          <p><span data-tr>Her güncellemeyi oyuncu geri bildirimleriyle şekillendiriyorum. Gelen her mesajı kendim okuyorum.</span><span data-en>Every update is shaped by player feedback, and I read every message myself.</span></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="contact">
+    <div class="wrap">
+      <div class="band">
+        <h2><span data-tr>Bir fikrin ya da sorun mu var?</span><span data-en>Got an idea or a question?</span></h2>
+        <p><span data-tr>Destek, iş birliği ve basın soruları için bana yaz. Genellikle birkaç gün içinde dönüyorum.</span><span data-en>Write to me for support, partnerships and press. I usually reply within a few days.</span></p>
+        <a class="btn" href="mailto:haxigamestudio@gmail.com">haxigamestudio@gmail.com</a>
+      </div>
+    </div>
+  </section>
 </main>
+
+<footer>
+  <div class="wrap">
+    <span>© 2026 Haxi Games</span>
+    <div class="foot-links">
+      <a href="/haxigames/mythweald/privacy.html"><span data-tr>Mythweald Gizlilik</span><span data-en>Mythweald Privacy</span></a>
+      <a href="mailto:haxigamestudio@gmail.com"><span data-tr>İletişim</span><span data-en>Contact</span></a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  (function () {
+    var root = document.documentElement;
+    var buttons = document.querySelectorAll('[data-set-lang]');
+    function setLang(lang) {
+      root.lang = lang;
+      buttons.forEach(function (b) { b.setAttribute('aria-pressed', String(b.dataset.setLang === lang)); });
+      try { localStorage.setItem('haxi-lang', lang); } catch (e) {}
+    }
+    var saved = null;
+    try { saved = localStorage.getItem('haxi-lang'); } catch (e) {}
+    var lang = saved || ((navigator.language || 'tr').toLowerCase().indexOf('tr') === 0 ? 'tr' : 'en');
+    setLang(lang);
+    buttons.forEach(function (b) { b.addEventListener('click', function () { setLang(b.dataset.setLang); }); });
+  })();
+</script>
 </body>
 </html>
